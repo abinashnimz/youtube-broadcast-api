@@ -56,82 +56,82 @@ let chatMessages = [];
 let team_data = [
     {
         "team_name":"falcons",
-        "score":0,
+        "score":1077,
         "team_logo":"",
     },
     {
         "team_name":"141",
-        "score":0,
+        "score":2025,
         "team_logo":"",
     },
     {
         "team_name":"asi8",
-        "score":0,
+        "score":99,
         "team_logo":"",
     },
     {
         "team_name":"leo",
-        "score":0,
+        "score":98,
         "team_logo":"",
     },
     {
         "team_name":"ste",
-        "score":0,
+        "score":333,
         "team_logo":"",
     },
     {
         "team_name":"t2k",
-        "score":0,
+        "score":200,
         "team_logo":"",
     },
     {
         "team_name":"a1",
-        "score":0,
+        "score":1000,
         "team_logo":"",
     },
     {
         "team_name":"4t",
-        "score":0,
+        "score":10,
         "team_logo":"",
     },
     {
         "team_name":"star",
-        "score":0,
+        "score":9,
         "team_logo":"",
     },
     {
         "team_name":"drs",
-        "score":0,
+        "score":23,
         "team_logo":"",
     },
     {
         "team_name":"asl",
-        "score":0,
+        "score":211,
         "team_logo":"",
     },
     {
         "team_name":"horaa",
-        "score":0,
+        "score":223,
         "team_logo":"",
     },
     {
         "team_name":"4mv",
-        "score":0,
+        "score":111,
         "team_logo":"",
     },
     {
         "team_name":"7e",
-        "score":0,
+        "score":555,
         "team_logo":"",
     },
     {
         "team_name":"ihc",
-        "score":0,
+        "score":999,
         "team_logo":"",
     },
     {
         "team_name":"r3g",
-        "score":0,
+        "score":2222,
         "team_logo":"",
     },
 ];
@@ -192,6 +192,7 @@ async function fetchLiveChatMessages(liveChatId) {
 
 // API Route to get stored messages
 app.get("/chats", (req, res) => {
+    team_data.sort((a,b)=> b.score-a.score);
     res.json(team_data);
 });
 
