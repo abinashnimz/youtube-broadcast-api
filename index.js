@@ -13,126 +13,174 @@ const app = express();
 // //middleware for accepting json
 app.use(express.json());
 
-const API_KEY = "AIzaSyANoeQcBUQYhF_3Zx0XT2DlYqr4FI-Shhk";
-const LIVE_VIDEO_ID = "gaQx5-FevXw";
+const API_KEY = "AIzaSyAq1inVZzJQyjbjBRLn16-obKkva71swEU";
+const LIVE_VIDEO_ID = "cpTFHSpLNcs";
 
-let chatMessages = [];
+// let chatMessages = [];
 
-// let hashTag = {
-//     "falcons":0,
-//     "141":0,
-//     "asi8":0,
-//     "leo":0,
-//     "ste":0,
-//     "t2k":0,
-//     "a1":0,
-//     "4t":0,
-//     "star":0,
-//     "drs":0,
-//     "asl":0,
-//     "horaa":0,
-//     "4mv":0,
-//     "7e":0,
-//     "ihc":0,
-//     "r3g":0,
-//     "east":0,
-//     "voltrux":0,
-//     "uzm":0,
-//     "haitdami":0,
-//     "riley":0,
-//     "rulz":0,
-//     "sinister":0,
-//     "falak":0,
-//     "fury":0,
-//     "delta":0,
-//     "chari":0,
-//     "sleepy":0,
-//     "dok":0,
-//     "goku":0,
-//     "alex":0,
-//     "blade":0,
-// };
+let player_data = [
+    {
+        "player_name":"east",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"voltrux",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"uzm",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"haitdami",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"riley",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"rulz",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"sinister",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"falak",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"fury",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"delta",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"chari",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"sleepy",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"dok",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"goku",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"alex",
+        "score":0,
+        "player_photo":""
+    },
+    {
+        "player_name":"blade",
+        "score":0,
+        "player_photo":""
+    },
+]
 
 let team_data = [
     {
         "team_name":"falcons",
-        "score":1077,
-        "team_logo":"",
+        "score":423,
+        "team_logo":"C:/PUBG LOGO/FALCON FORCE.png",
     },
     {
         "team_name":"141",
-        "score":2025,
-        "team_logo":"",
+        "score":1247,
+        "team_logo":"C:/PUBG LOGO/141.png",
     },
     {
         "team_name":"asi8",
-        "score":99,
-        "team_logo":"",
+        "score":4347,
+        "team_logo":"C:/PUBG LOGO/AS i8 Esports.png",
     },
     {
         "team_name":"leo",
-        "score":98,
-        "team_logo":"",
+        "score":3300,
+        "team_logo":"C:/PUBG LOGO/LEO ESPORTS.png",
     },
     {
         "team_name":"ste",
-        "score":333,
-        "team_logo":"",
+        "score":327,
+        "team_logo":"C:/PUBG LOGO/STE.png",
     },
     {
         "team_name":"t2k",
-        "score":200,
-        "team_logo":"",
+        "score":3927,
+        "team_logo":"C:/PUBG LOGO/T2K ESPORTS.png",
     },
     {
         "team_name":"a1",
-        "score":1000,
-        "team_logo":"",
+        "score":6008,
+        "team_logo":"C:/PUBG LOGO/A1 AERO.PNG",
     },
     {
         "team_name":"4t",
-        "score":10,
-        "team_logo":"",
+        "score":5102,
+        "team_logo":"C:/PUBG LOGO/4THRIVES.png",
     },
     {
         "team_name":"star",
-        "score":9,
-        "team_logo":"",
+        "score":325,
+        "team_logo":"C:/PUBG LOGO/TEAM STAR x RD.png",
     },
     {
         "team_name":"drs",
-        "score":23,
-        "team_logo":"",
+        "score":10102,
+        "team_logo":"C:/PUBG LOGO/DRS.PNG",
     },
     {
         "team_name":"asl",
-        "score":211,
-        "team_logo":"",
+        "score":3542,
+        "team_logo":"C:/PUBG LOGO/ABRUPT SLAYERS.png",
     },
     {
         "team_name":"horaa",
-        "score":223,
-        "team_logo":"",
+        "score":11342,
+        "team_logo":"C:/PUBG LOGO/HORAA ESPORTS.png",
     },
     {
         "team_name":"4mv",
-        "score":111,
-        "team_logo":"",
+        "score":636,
+        "team_logo":"C:/PUBG LOGO/4Merical Vibes.png",
     },
     {
         "team_name":"7e",
-        "score":555,
-        "team_logo":"",
+        "score":314,
+        "team_logo":"C:/PUBG LOGO/Seventh Element.png",
     },
     {
         "team_name":"ihc",
-        "score":999,
-        "team_logo":"",
+        "score":157,
+        "team_logo":"C:/PUBG LOGO/IHC esports.png",
     },
     {
         "team_name":"r3g",
-        "score":2222,
-        "team_logo":"",
+        "score":826,
+        "team_logo":"C:/PUBG LOGO/THE R3GICIDE.png",
     },
 ];
 
@@ -183,6 +231,11 @@ async function fetchLiveChatMessages(liveChatId) {
                         team_data[i].score+=1;
                     }
                 }
+                for(let i=0; i<player_data.length; i++){
+                    if(newMsg.includes(`#${player_data[i].player_name}`)){
+                        player_data[i].score+=1;
+                    }
+                }
             }
         });
     } catch (error) {
@@ -191,17 +244,22 @@ async function fetchLiveChatMessages(liveChatId) {
 }
 
 // API Route to get stored messages
-app.get("/chats", (req, res) => {
+app.get("/team-chats", (req, res) => {
     team_data.sort((a,b)=> b.score-a.score);
     res.json(team_data);
 });
+
+app.get("/player-chats", (req, res)=>{
+    player_data.sort((a,b)=> b.score - a.score);
+    res.json(player_data)
+})
 
 // Start fetching messages every 3 seconds
 async function startFetching() {
     const liveChatId = await getLiveChatId();
     if (liveChatId) {
         console.log("Live Chat ID:", liveChatId);
-        setInterval(() => fetchLiveChatMessages(liveChatId), 5000);
+        setInterval(() => fetchLiveChatMessages(liveChatId), 3000);
     } else {
         console.log("No active live chat found.");
     }
@@ -210,5 +268,5 @@ async function startFetching() {
 // Start server and fetching
 app.listen(PORT, async () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    await startFetching();
+    // await startFetching();
 });
