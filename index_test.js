@@ -1,139 +1,64 @@
-// //initializing and configure dotenv secret fiel.
-import dotenv from "dotenv";
-dotenv.config();
+const axios = require('axios');
 
-import express from "express";
-import axios from "axios";
+const API_KEY = 'YOUR_API_KEY'; // Replace with your API key
+const LIVE_CHAT_ID = 'YOUR_LIVE_CHAT_ID'; // Replace with your live chat ID
+const BASE_URL = 'https://www.googleapis.com/youtube/v3/liveChat/messages';
 
-// //Static files
-const PORT=process.env.PORT
+let nextPageToken = ''; // Stores the nextPageToken for incremental fetching
 
-// //Express app initialization
-const app = express();
-
-// //middleware for accepting json
-app.use(express.json());
-
-// //listening the port and starting the app
-// app.listen(PORT, ()=>{
-//     console.log(`Server started on PORT:${PORT}`);
-// });
-
-
-
-const API_KEY = "AIzaSyCoL4zmj1TCBh-XaNAG1eCSoZbMfBA1oLM";
-const LIVE_VIDEO_ID = "rK2p4dFniQo";
-let chatMessages = {
-    "falcons":0,
-    "141":0,
-    "asi8":0,
-    "leo":0,
-    "ste":0,
-    "t2k":0,
-    "a1":0,
-    "4t":0,
-    "star":0,
-    "drs":0,
-    "asl":0,
-    "horaa":0,
-    "4mv":0,
-    "7e":0,
-    "ihc":0,
-    "r3g":0,
-    "east":0,
-    "voltrux":0,
-    "uzm":0,
-    "haitdami":0,
-    "riley":0,
-    "rulz":0,
-    "sinister":0,
-    "falak":0,
-    "fury":0,
-    "delta":0,
-    "chari":0,
-    "sleepy":0,
-    "dok":0,
-    "goku":0,
-    "alex":0,
-    "blade":0,
-};
-
-
-async function getLiveChatId(videoId) {
+async function getLiveChatMessages() {
     try {
-        const response = await axios.get("https://www.googleapis.com/youtube/v3/videos", {
-            params: {
-                part: "liveStreamingDetails",
-                id: videoId,
-                key: API_KEY,
-            },
-        });
+        const params = {
+            liveChatId: LIVE_CHAT_ID,
+            part: 'snippet,authorDetails',
+            key: API_KEY,
+            pageToken: nextPageToken,
+        };
 
+        const response = await axios.get(BASE_URL, { params });
+        const data = response.data;
+
+        // Extract messages
+        if (data.items.length > 0) {
+            for (const item of data.items) {
+                console.log(`[${item.authorDetails.displayName}]: ${item.snippet.displayMessage}`);
+            }
+        }
+
+        // Update nextPageToken for subsequent requests
+        nextPageToken = data.nextPageToken || nextPageToken;
+
+        // Use the recommended polling interval to avoid unnecessary API calls
+        const delay = data.pollingIntervalMillis || 5000; // Default to 5 seconds if not provided
+
+        setTimeout(getLiveChatMessages, delay);
+    } catch (error) {
+        console.error('Error fetching live chat:', error.message);
+        setTimeout(getLiveChatMessages, 5000); // Retry after 5 seconds on error
+    }
+}
+
+// Start fetching live chat messages
+getLiveChatMessages();
+
+
+
+async function getLiveChatId() {
+    try {
+        const url = `https://www.googleapis.com/youtube/v3/videos?id=${VIDEO_ID}&part=liveStreamingDetails&key=${API_KEY}`;
+        const response = await axios.get(url);
+        
         const liveChatId = response.data.items[0]?.liveStreamingDetails?.activeLiveChatId;
-        return liveChatId;
+
+        if (liveChatId) {
+            console.log(`Live Chat ID: ${liveChatId}`);
+            return liveChatId;
+        } else {
+            console.log("No active live chat found for this video.");
+        }
     } catch (error) {
-        console.error("Error getting live chat ID:", error.response?.data || error.message);
-        return null;
+        console.error("Error fetching live chat ID:", error.response?.data || error.message);
     }
 }
 
-async function fetchLiveChatMessages(liveChatId) {
-    try {
-        const response = await axios.get("https://www.googleapis.com/youtube/v3/liveChat/messages", {
-            params: {
-                part: "snippet,authorDetails",
-                liveChatId: liveChatId,
-                key: API_KEY,
-            },
-        });
-
-
-        // console.log(response);
-
-        // const messages = response.data.items.map((item) => ({
-        //     id: item.id,
-        //     author: item.authorDetails.displayName,
-        //     message: item.snippet.displayMessage,
-        //     timestamp: item.snippet.publishedAt,
-        // }));
-        // console.log(messages);
-
-    
-
-        // for(let key in chatMessages){
-        //     if(msg.includes(`#${key}`)){
-        //         chatMessages[key]+=1;
-        //     }
-        // }
-
-
-        // chatMessages = messages;
-    } catch (error) {
-        console.error("Error fetching live chat messages:", error.response?.data || error.message);
-    }
-}
-
-async function startFetching() {
-    const liveChatId = await getLiveChatId(LIVE_VIDEO_ID);
-    if (!liveChatId) {
-        console.error("Live chat ID not found.");
-        return;
-    }
-
-    console.log("Fetching chat messages...");
-
-    setInterval(() => {
-        fetchLiveChatMessages(liveChatId);
-    }, 10000); // Fetch messages every 5 seconds
-}
-
-console.log(chatMessages)
-
-app.get("/chat", (req, res) => {
-    res.json({ hashtags: chatMessages });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    startFetching();
-});
+getLiveChatId();
